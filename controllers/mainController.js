@@ -3,12 +3,17 @@ import asyncHandler from "express-async-handler";
 const mainController = {
   // Handle diplaying index
   index: asyncHandler(async (req, res) => {
-    res.send("Index page");
+    res.render("index", { title: "Home page" });
   }),
 
   // Handle diplaying home
   home_get: asyncHandler(async (req, res) => {
-    res.send("Home page");
+    // Redirect back if not logged in
+    if (!req.user) {
+      res.redirect("/login");
+    }
+
+    res.render("home", { title: "Home" });
   }),
 
   // Handle creating a folder

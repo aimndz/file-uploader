@@ -1,0 +1,28 @@
+<section>
+  <form action="/login" method="POST" novalidate>
+    <div>
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" value="<%= inputs.email %>" placeholder="Enter your email">
+    </div>
+    <%- include('partials/_error', { field: 'email' }) %>
+    <div>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" value="<%= inputs.password%>" placeholder="Enter your password">
+    </div>
+    <%- include('partials/_error', { field: 'password' }) %>
+    <button type="submit">Login</button>
+    <%- include('partials/_error', { field: 'authentication' }) %>
+  </form>
+  <a href="/sign-up">Don't have an account? Sign up</a>
+  <div>
+    <span>or</span>
+  </div>
+  <div>
+    <div>
+      <a href="#">Continue with Google</a>
+    </div>
+    <div>
+      <a href="#">Continue with GitHub</a>
+    </div>
+  </div>
+</section>
