@@ -8,12 +8,11 @@ const mainController = {
 
   // Handle diplaying home
   home_get: asyncHandler(async (req, res) => {
-    // Redirect back if not logged in
-    if (!req.user) {
+    if (req.isAuthenticated()) {
+      res.render("home", { title: "home" });
+    } else {
       res.redirect("/login");
     }
-
-    res.render("home", { title: "Home" });
   }),
 
   // Handle creating a folder
@@ -28,7 +27,12 @@ const mainController = {
 
   // Handle logout
   logout_get: asyncHandler(async (req, res) => {
-    // TODO
+    req.logout((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect("/");
+    });
   }),
 };
 
