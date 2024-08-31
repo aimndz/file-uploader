@@ -170,6 +170,21 @@ const authController = {
       }
     }),
   ],
+
+  auth_google_get: asyncHandler(async (req, res, next) => {
+    passport.authenticate("google", { scope: ["email", "profile"] })(
+      req,
+      res,
+      next
+    );
+  }),
+
+  auth_google_callback_get: asyncHandler(async (req, res, next) => {
+    passport.authenticate("google", {
+      successRedirect: "/home",
+      failureRedirect: "/",
+    })(req, res, next);
+  }),
 };
 
 export default authController;

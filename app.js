@@ -11,6 +11,9 @@ import fileRouter from "./routers/fileRouter.js";
 import folderRouter from "./routers/folderRouter.js";
 import passport from "./config/passport.js";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const app = express();
 app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true }));
@@ -24,7 +27,7 @@ app.use(
     cookie: {
       maxAge: 7 * 24 * 60 * 60 * 1000, // ms
     },
-    secret: "a santa at nasa",
+    secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
     store: new PrismaSessionStore(new PrismaClient(), {
@@ -36,6 +39,7 @@ app.use(
 );
 app.use(passport.session());
 
+// Routers
 app.use("/", mainRouter);
 app.use("/", authRouter);
 app.use("/files", fileRouter);

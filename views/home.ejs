@@ -1,2 +1,6 @@
 <h1><%= title %></h1>
+
+<% if (user) { %>
+<h2>Hello, <%= user.firstName %>!</h2>
 <a href="/logout">Log out</a>
+<% } %>

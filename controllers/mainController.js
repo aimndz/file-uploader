@@ -9,10 +9,18 @@ const mainController = {
   // Handle diplaying home
   home_get: asyncHandler(async (req, res) => {
     if (req.isAuthenticated()) {
-      res.render("home", { title: "home" });
+      res.render("home", {
+        title: "Home Page",
+        user: req.user,
+      });
     } else {
       res.redirect("/login");
     }
+    // console.log(res.json);
+    // res.render("home", {
+    //   title: "Home Page",
+    //   user: req.user,
+    // });
   }),
 
   // Handle creating a folder
@@ -27,11 +35,13 @@ const mainController = {
 
   // Handle logout
   logout_get: asyncHandler(async (req, res) => {
-    req.logout((err) => {
+    req.session.destroy((err) => {
       if (err) {
-        return next(err);
+        return res.status(500).send("Failed to log out");
       }
-      res.redirect("/");
+
+      res.clearCookie("connect.sid");
+      res.redirect("/login");
     });
   }),
 };
