@@ -1,4 +1,7 @@
 import asyncHandler from "express-async-handler";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const mainController = {
   // Handle diplaying index
@@ -9,9 +12,19 @@ const mainController = {
   // Handle diplaying home
   home_get: asyncHandler(async (req, res) => {
     if (req.isAuthenticated()) {
+      const folders = await prisma.folder.findMany({
+        where: {
+          userId: req.user.id,
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+
       res.render("home", {
         title: "Home Page",
         user: req.user,
+        items: folders,
       });
     } else {
       res.redirect("/login");

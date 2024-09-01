@@ -12,3 +12,29 @@
   </div>
   <button type="submit">Upload</button>
 </form>
+
+<form action="/folders/create-folder" method="POST">
+  <div>
+    <label for="folder_name">New folder</label>
+    <input type="text" name="folder_name" id="folder_name" value="Untitled Folder">
+  </div>
+  <button type="submit">Create</button>
+</form>
+
+<section>
+  <h3>Items</h3>
+  <ul>
+    <% items.forEach(item => { %>
+    <li><%= item.name%>
+      <a href="/folders/<%= item.id %>"><button>View</button></a>
+      <form action="/folders/<%= item.id %>/edit-folder" method="POST">
+        <input type="text" name="new_folder_name" placeholder="New folder name...">
+        <button type="submit">Edit</button>
+      </form>
+      <form action="/folders/<%= item.id %>/delete-folder" method="POST">
+        <button type="submit">Delete</button>
+      </form>
+    </li>
+    <% }) %>
+  </ul>
+</section>
