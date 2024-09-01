@@ -4,3 +4,11 @@
 <h2>Hello, <%= user.firstName %>!</h2>
 <a href="/logout">Log out</a>
 <% } %>
+
+<form action="/files/upload-file" method="POST" enctype="multipart/form-data">
+  <div>
+    <label for="file">File upload</label>
+    <input type="file" name="file" id="file">
+  </div>
+  <button type="submit">Upload</button>
+</form>
