@@ -6,34 +6,12 @@ const prisma = new PrismaClient();
 const mainController = {
   // Handle diplaying index
   index: asyncHandler(async (req, res) => {
-    res.render("index", { title: "Home page" });
+    res.render("index");
   }),
 
   // Handle diplaying home
   home_get: asyncHandler(async (req, res) => {
-    if (req.isAuthenticated()) {
-      const folders = await prisma.folder.findMany({
-        where: {
-          userId: req.user.id,
-        },
-        orderBy: {
-          createdAt: "asc",
-        },
-      });
-
-      res.render("home", {
-        title: "Home Page",
-        user: req.user,
-        items: folders,
-      });
-    } else {
-      res.redirect("/login");
-    }
-    // console.log(res.json);
-    // res.render("home", {
-    //   title: "Home Page",
-    //   user: req.user,
-    // });
+    res.render("home");
   }),
 
   // Handle creating a folder

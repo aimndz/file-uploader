@@ -41,13 +41,16 @@ model File {
 }
 
 model Folder {
-  id        String   @id @default(uuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  files     File[]
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
+  id             String   @id @default(uuid())
+  name           String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  files          File[]
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  parentFolderId String?
+  parentFolder   Folder?  @relation("FolderHeirarchy", fields: [parentFolderId], references: [id], onDelete: Cascade)
+  subFolders     Folder[] @relation("FolderHeirarchy")
 }
 
 model Session {

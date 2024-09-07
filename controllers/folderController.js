@@ -6,20 +6,7 @@ const prisma = new PrismaClient();
 
 const folderController = {
   display_folder_get: asyncHandler(async (req, res) => {
-    const folderName = await prisma.folder.findFirst({
-      where: {
-        id: req.params.id,
-      },
-    });
-
-    // Temporarily empty
-    const items = [];
-
-    res.render("home", {
-      title: folderName.name,
-      items: items,
-      user: req.user,
-    });
+    res.render("home");
   }),
 
   // Handle creating a folder
@@ -31,40 +18,68 @@ const folderController = {
       .isLength({ max: 35 })
       .withMessage("Name exceeds 35 characters.")
       .matches(/^[a-zA-Z0-9\s!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?`~\-]+$/)
-      .withMessage("Invalid input"),
-
-    asyncHandler(async (req, res) => {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(400).render("home", {
-          title: "Home",
-          errors: errors.array(),
-          inputs: req.body,
-        });
-      }
-
-      const { folder_name } = req.body;
-
-      try {
-        await prisma.folder.create({
-          data: {
+      .withMessage("Invalid input")
+      .custom(async (folder_name, { req }) => {
+        const existingFolder = await prisma.folder.findFirst({
+          where: {
             name: folder_name,
             userId: req.user.id,
           },
         });
 
-        res.redirect("/home");
+        if (existingFolder) {
+          throw new Error("Folder name already exists.");
+        }
+
+        return true;
+      }),
+
+    asyncHandler(async (req, res) => {
+      const { folder_name, parent_folder = "root" } = req.body;
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        // if (parent_folder !== "root") {
+        //   return res.redirect(`/folders/${parent_folder}`);
+        // } else {
+        //   return res.redirect("/home");
+        // }
+
+        return res.status(400).render("home", {
+          errors: errors.array(),
+        });
+      }
+
+      try {
+        const folderData = {
+          name: folder_name,
+          userId: req.user.id,
+        };
+
+        if (parent_folder !== "root") {
+          folderData.parentFolderId = parent_folder;
+        }
+
+        await prisma.folder.create({
+          data: folderData,
+        });
+
+        if (parent_folder !== "root") {
+          res.redirect(`/folders/${parent_folder}`);
+        } else {
+          res.redirect("/home");
+        }
       } catch (error) {
         console.log(error);
         res.status(500).render("home", {
           title: "Home",
           errors: [
             {
-              msg: "An error occurred during sign up. Please try again later.",
+              msg: "An error occurred creating a folder. Please try again later.",
             },
           ],
           inputs: req.body,
+          user: req.user,
         });
       }
     }),
@@ -92,7 +107,9 @@ const folderController = {
         });
       }
 
-      const { new_folder_name } = req.body;
+      let { parent_folder, new_folder_name } = req.body;
+
+      parent_folder = parent_folder || "root";
 
       try {
         await prisma.folder.update({
@@ -104,7 +121,11 @@ const folderController = {
           },
         });
 
-        res.redirect("/home");
+        if (parent_folder !== "root") {
+          res.redirect(`/folders/${parent_folder}`);
+        } else {
+          res.redirect("/home");
+        }
       } catch (error) {
         console.log(error);
         res.status(500).render("home", {
@@ -122,13 +143,19 @@ const folderController = {
 
   // Handle deleting a folder
   delete_folder_post: asyncHandler(async (req, res) => {
+    const { parent_folder = "root" } = req.body;
+
     await prisma.folder.delete({
       where: {
         id: req.params.id,
       },
     });
 
-    res.redirect("/home");
+    if (parent_folder !== "root") {
+      res.redirect(`/folders/${parent_folder}`);
+    } else {
+      res.redirect("/home");
+    }
   }),
 };
 
