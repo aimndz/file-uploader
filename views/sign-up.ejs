@@ -1,42 +1,60 @@
 <section>
-  <form action="/sign-up" method="POST" novalidate>
-    <div>
-      <div>
-        <label for="first_name">First name</label>
-        <input id="first_name" name="first_name" type="text" value="<%= inputs.first_name %>" placeholder="Enter your first name">
-      </div>
-      <%- include('partials/_error', { field: 'first_name' }) %>
-      <div>
-        <label for="last_name">Last name</label>
-        <input id="last_name" name="last_name" type="text" value="<%= inputs.last_name %>" placeholder=" Enter your last name">
-      </div>
-      <%- include('partials/_error', { field: 'last_name' }) %>
-    </div>
-    <div>
-      <label for="email">Email</label>
-      <input id="email" name="email" type="email" value="<%= inputs.email %>" placeholder="Enter your email">
-    </div>
-    <%- include('partials/_error', { field: 'email' }) %>
-    <div>
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" value="<%= inputs.password %>" placeholder="Enter your password">
-    </div>
-    <%- include('partials/_error', { field: 'password' }) %>
-    <div>
-      <label for="confirm_password">Confirm password</label>
-      <input id="confirm_password" name="confirm_password" type="password" value="<%= inputs.confirm_password %>" placeholder="Confirm password">
-    </div>
-    <%- include('partials/_error', { field: 'confirm_password' }) %>
-    <button type="submit">Sign up</button>
-  </form>
-  <a href="/login">Already have an account? Login</a>
-  <div>
-    <span>or</span>
+  <div class="pt-5">
+    <a href="/"><img src="/images/aim-cloud-logo.svg" class="w-32" alt="aim-cloud-logo"></a>
   </div>
-  <div>
-    <div>
-      <a href="/auth/google">Continue with Google</a>
-    </div>
+  <div class="flex justify-center py-24 ">
+    <form action="/sign-up" method="POST" class="bg-primary-100 w-full max-w-md p-5 rounded border border-solid border-primary-300 space-y-3" novalidate>
+      <h1 class="text-center font-medium text-2xl">Sign up</h1>
+
+      <!-- First name input -->
+      <div>
+        <%- include('partials/_input', { label: 'First name', name: 'first_name', type: 'text', value: inputs.first_name,  placeholder: 'Enter your first name' }) %>
+        <%- include('partials/_error', { field: 'first_name' }) %>
+      </div>
+
+      <!-- Last name input -->
+      <div>
+        <%- include('partials/_input', { label: 'Last name', name: 'last_name', type: 'text', value: inputs.last_name, placeholder: 'Enter your last name' }) %>
+        <%- include('partials/_error', { field: 'last_name' }) %>
+      </div>
+
+      <!-- Email input -->
+      <div>
+        <%- include('partials/_input', { label: 'Email', name: 'email', type: 'email', value: inputs.email, placeholder: 'Enter your email' }) %>
+        <%- include('partials/_error', { field: 'email' }) %>
+      </div>
+      <!-- Password input -->
+      <div>
+        <%- include('partials/_input', { label: 'Password', name: 'password', type: 'password', value: inputs.password, placeholder: 'Enter your password' }) %>
+        <%- include('partials/_error', { field: 'password' }) %>
+      </div>
+
+      <!--Confirm password input -->
+      <div>
+        <%- include('partials/_input', { label: 'Confirm password', name: 'confirm_password', type: 'password', value: inputs.confirm_password, placeholder: 'Confirm password' }) %>
+        <%- include('partials/_error', { field: 'confirm_password' }) %>
+      </div>
+
+      <!-- Sign up button -->
+      <button type="submit" class="block p-3 mx-auto w-full border border-solid text-primary-100 bg-accent-500 rounded-lg hover:bg-accent-600 transition-all delay-75 duration-100 ease-in-out">Sign up</button>
+
+      <!-- Sign up errors -->
+      <%- include('partials/_error', { field: 'authentication' }) %>
+      <div class="text-center">
+        <a href="/login" class="underline text-accent-500">Already have an account? Login</a>
+      </div>
+      <div class="text-center">
+        <span>-or-</span>
+      </div>
+      <div>
+        <a href="/auth/google" class="flex gap-3 justify-center items-center p-3 w-full bg-primary-200 border border-solid border-primary-300 rounded">
+          <div class="max-w-5">
+            <img src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-icon-png-transparent-background-osteopathy-16.png" alt="">
+          </div>
+          <span>Continue with Google</span>
+        </a>
+      </div>
+    </form>
   </div>
 
 </section>

@@ -8,7 +8,7 @@ import setHomeData from "../middlewares/setHomeData.js";
 // Controllers
 import mainController from "../controllers/mainController.js";
 
-mainRouter.get("/", setHomeData, mainController.index);
+mainRouter.get("/", mainController.index);
 mainRouter.get(
   "/home",
   ensureAuthenticated,

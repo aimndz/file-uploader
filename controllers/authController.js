@@ -9,12 +9,21 @@ const prisma = new PrismaClient();
 const authController = {
   // Handle login get
   login_get: asyncHandler(async (req, res) => {
+    if (req.isAuthenticated()) {
+      return res.redirect("/home");
+    }
+
     res.render("login", { title: "Login", inputs: {} });
   }),
 
   // Handle login post
   login_post: [
-    body("email").trim().notEmpty().withMessage("Email should not be empty."),
+    body("email")
+      .trim()
+      .notEmpty()
+      .withMessage("Email should not be empty.")
+      .isEmail()
+      .withMessage("It should be a valid email."),
 
     body("password")
       .trim()
@@ -60,6 +69,10 @@ const authController = {
 
   // Handle sign up get
   sign_up_get: asyncHandler(async (req, res) => {
+    if (req.isAuthenticated()) {
+      return res.redirect("/home");
+    }
+
     res.render("sign-up", { title: "Sign up", inputs: {} });
   }),
 

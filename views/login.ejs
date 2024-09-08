@@ -1,25 +1,41 @@
 <section>
-  <form action="/login" method="POST" novalidate>
-    <div>
-      <label for="email">Email</label>
-      <input id="email" name="email" type="email" value="<%= inputs.email %>" placeholder="Enter your email">
-    </div>
-    <%- include('partials/_error', { field: 'email' }) %>
-    <div>
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" value="<%= inputs.password%>" placeholder="Enter your password">
-    </div>
-    <%- include('partials/_error', { field: 'password' }) %>
-    <button type="submit">Login</button>
-    <%- include('partials/_error', { field: 'authentication' }) %>
-  </form>
-  <a href="/sign-up">Don't have an account? Sign up</a>
-  <div>
-    <span>or</span>
+  <div class="pt-5">
+    <a href="/"><img src="/images/aim-cloud-logo.svg" class="w-32" alt="aim-cloud-logo"></a>
   </div>
-  <div>
-    <div>
-      <a href="/auth/google">Continue with Google</a>
-    </div>
+  <div class="flex justify-center py-48">
+    <form action="/login" method="POST" class="bg-primary-100 w-full max-w-md p-5 rounded border border-solid border-primary-300 space-y-3" novalidate>
+      <h1 class="text-center font-medium text-2xl">Login</h1>
+      <!-- Email input -->
+      <div>
+        <%- include('partials/_input', { label: 'Email', name: 'email', type: 'email', value: inputs.email, placeholder: 'Enter your email' }) %>
+        <%- include('partials/_error', { field: 'email' }) %>
+      </div>
+      <!-- Password input -->
+      <div>
+        <%- include('partials/_input', { label: 'Password', name: 'password', type: 'password', value: inputs.password, placeholder: 'Enter your password' }) %>
+        <%- include('partials/_error', { field: 'password' }) %>
+      </div>
+
+      <!-- Login button -->
+      <button type="submit" class="block p-3 mx-auto w-full border border-solid text-primary-100 bg-accent-500 rounded-lg hover:bg-accent-600 transition-all delay-75 duration-100 ease-in-out">Login</button>
+
+      <!-- Login errors -->
+      <%- include('partials/_error', { field: 'authentication' }) %>
+      <div class="text-center">
+        <a href="/sign-up" class="underline text-accent-500">Don't have an account? Sign up</a>
+      </div>
+      <div class="text-center">
+        <span>-or-</span>
+      </div>
+      <div>
+        <a href="/auth/google" class="flex gap-3 justify-center items-center p-3 w-full bg-primary-200 border border-solid border-primary-300 rounded">
+          <div class="max-w-5">
+            <img src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-icon-png-transparent-background-osteopathy-16.png" alt="">
+          </div>
+          <span>Continue with Google</span>
+        </a>
+      </div>
+    </form>
   </div>
+
 </section>

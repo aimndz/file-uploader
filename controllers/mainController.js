@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const mainController = {
   // Handle diplaying index
   index: asyncHandler(async (req, res) => {
-    res.render("index");
+    res.render("index", { title: "Aim Cloud | Upload, Share, and Manage" });
   }),
 
   // Handle diplaying home

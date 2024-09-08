@@ -2,6 +2,13 @@ import express from "express";
 import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
 
+import { fileURLToPath } from "url";
+import path from "path";
+
+// Get the current file's URL and convert it to a directory path
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import { PrismaClient } from "@prisma/client";
 
@@ -17,6 +24,7 @@ dotenv.config();
 const app = express();
 app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.set("layout", "./layouts/main");
 app.set("view engine", "ejs");

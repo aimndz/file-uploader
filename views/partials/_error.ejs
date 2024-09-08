@@ -1,6 +1,6 @@
 <% if (typeof errors !== 'undefined' && errors) { %>
 <% const error = errors.find(e => e.path === field); %>
 <% if (error) { %>
-<div class="error"><%= error.msg %></div>
+<div class="text-red-500"><%= error.msg %></div>
 <% } %>
 <% } %>
