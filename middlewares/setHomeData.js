@@ -52,10 +52,10 @@ const setHomeData = asyncHandler(async (req, res, next) => {
     ...files.map((file) => ({
       ...file,
       type: "file",
-      createdAt: formatDistanceToNow(folder.createdAt, {
+      createdAt: formatDistanceToNow(file.createdAt, {
         addSuffix: true,
       }),
-      updatedAt: formatDistanceToNow(folder.createdAt, {
+      updatedAt: formatDistanceToNow(file.createdAt, {
         addSuffix: true,
       }),
     })),
