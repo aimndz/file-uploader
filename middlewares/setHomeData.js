@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, formatDistanceToNowStrict } from "date-fns";
 import { PrismaClient } from "@prisma/client";
+import { formatSize } from "../config/utils.js";
 
 const prisma = new PrismaClient();
 
@@ -42,26 +43,25 @@ const setHomeData = asyncHandler(async (req, res, next) => {
     ...folders.map((folder) => ({
       ...folder,
       type: "folder",
-      createdAt: formatDistanceToNow(folder.createdAt, {
+      createdAt: formatDistanceToNowStrict(folder.createdAt, {
         addSuffix: true,
       }),
-      updatedAt: formatDistanceToNow(folder.createdAt, {
+      modifiedAt: formatDistanceToNowStrict(folder.modifiedAt, {
         addSuffix: true,
       }),
     })),
     ...files.map((file) => ({
       ...file,
       type: "file",
-      createdAt: formatDistanceToNow(file.createdAt, {
+      size: formatSize(file.size),
+      createdAt: formatDistanceToNowStrict(file.createdAt, {
         addSuffix: true,
       }),
-      updatedAt: formatDistanceToNow(file.createdAt, {
+      modifiedAt: formatDistanceToNowStrict(file.modifiedAt, {
         addSuffix: true,
       }),
     })),
   ];
-
-  console.log(items);
 
   res.locals.title = currentFolder ? currentFolder.name : "Home Page";
   res.locals.user = req.user;
