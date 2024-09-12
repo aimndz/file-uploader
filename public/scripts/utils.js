@@ -1,12 +1,19 @@
-function showEditDialog(folderId, folderName) {
+function showFolderEditDialog(id, folderName) {
   const dialog = document.getElementById("editFolderDialog");
-  dialog.querySelector("form").action = `/folders/${folderId}/edit-folder`;
+  dialog.querySelector("form").action = `/folders/${id}/edit-folder`;
   dialog.querySelector('input[name="new_folder_name"]').value = folderName;
   dialog.showModal();
 }
 
-function showFolderOptions(folderId) {
-  document.getElementById(`folder-option-${folderId}`).show();
+function showFileEditDialog(id, fileName) {
+  const dialog = document.getElementById("editFileDialog");
+  dialog.querySelector("form").action = `/files/${id}/edit-file`;
+  dialog.querySelector('input[name="new_file_name"]').value = fileName;
+  dialog.showModal();
+}
+
+function showOptions(id) {
+  document.getElementById(`folder-option-${id}`).show();
 }
 
 // Close options dialog when clicking outside

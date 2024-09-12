@@ -2,7 +2,7 @@
   <!-- HEADER -->
   <header class="flex justify-between items-center py-3">
     <div>
-      <a href="/"><img src="/images/aim-cloud-logo.svg" class="w-32" alt="aim-cloud-logo"></a>
+      <a href="/home"><img src="/images/aim-cloud-logo.svg" class="w-32" alt="aim-cloud-logo"></a>
     </div>
 
     <% if (user) { %>
@@ -20,7 +20,8 @@
 
   <!-- DIALOGS -->
   <%- include('partials/_dialog_create.ejs') %>
-  <%- include('partials/_dialog_edit.ejs') %>
+  <%- include('partials/_dialog_folder-edit.ejs') %>
+  <%- include('partials/_dialog_file-edit.ejs') %>
 
   <!-- CURRENT FOLDER AND ADD BUTTONS -->
   <div class="flex justify-between items-center mt-10">
@@ -64,42 +65,8 @@
     </div>
   </div>
 
-  <section>
-    <ul>
-      <% items.forEach(item => { %>
-      <li>
-        <%= item.name%>
-        <% if (item.type === "folder") {%>
-        <!-- Folders -->
-        <a href="/folders/<%= item.id %>"><button>View</button></a>
-        <form action="/folders/<%= item.id %>/edit-folder" method="POST">
-          <input type="text" name="new_folder_name" placeholder="New folder name..." value="<%= item.name %>">
-          <input type="hidden" name="parent_folder" value="<%= folderId %>" />
-          <button type="submit">Edit Folder</button>
-        </form>
-        <form action="/folders/<%= item.id %>/delete-folder" method="POST">
-          <% if (folderId) { %>
-          <input type="hidden" name="parent_folder" value="<%= folderId %>" />
-          <% } %>
-          <button type="submit">Delete Folder</button>
-        </form>
-        <% } else if (item.type === "file") { %>
-        <!-- Files -->
-        <a href="/files/<%= item.id %>"><button>View</button></a>
-        <form action="/files/<%= item.id %>/edit-file" method="POST">
-          <input type="text" name="new_file_name" placeholder="New file name..." value="<%= item.name %>">
-          <input type="hidden" name="parent_folder" value="<%= folderId %>" />
-          <button type="submit">Edit file</button>
-        </form>
-        <form action="/files/<%= item.id %>/delete-file" method="POST">
-          <input type="hidden" name="parent_folder" value="<%= folderId %>" />
-          <button type="submit">Delete file</button>
-        </form>
-        <% } %>
-      </li>
-      <% }) %>
-    </ul>
-
+  <!-- MAIN TABLE -->
+  <section class="mt-10">
     <table class="w-full bg-primary-100">
       <tr class="border-b border-solid px-3">
         <th class="font-semibold py-3 pl-3 text-start">Name</th>
@@ -117,12 +84,12 @@
         <td class="py-3 text-primary-800"><%= item.modifiedAt%></td>
         <td class="py-3 text-primary-800"><%= item.size %></td>
         <td class="py-3 text-primary-800 pr-3 relative">
-          <div class="flex justify-center cursor-pointer" onclick="showFolderOptions('<%= item.id %>')">
+          <div class="flex justify-center cursor-pointer" onclick="showOptions('<%= item.id %>')">
             <img src="/images/options-icon.svg" alt="options-icon">
           </div>
           <dialog id="folder-option-<%= item.id %>" class="folder-option focus:outline-none absolute top-3 -left-40 drop-shadow-lg py-3 z-50 bg-primary-100">
             <ul>
-              <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3" onclick="showEditDialog('<%= item.id %>', '<%= item.name %>')">
+              <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3" onclick="showFolderEditDialog('<%= item.id %>', '<%= item.name %>')">
                 <div>
                   <img src="/images/options/edit-option.svg" alt="edit-icon">
                 </div>
@@ -166,10 +133,46 @@
         <td class="py-3 text-primary-800"><%= item.createdAt %></td>
         <td class="py-3 text-primary-800"><%= item.modifiedAt%></td>
         <td class="py-3 text-primary-800"><%= item.size %></td>
-        <td class="py-3 pt-3 text-primary-800 pr-3">
-          <div class="flex justify-center cursor-pointer" onclick="document.getElementById('folderOption').show()">
+        <td class="py-3 text-primary-800 pr-3 relative">
+          <div class="flex justify-center cursor-pointer" onclick="showOptions('<%= item.id %>')">
             <img src="/images/options-icon.svg" alt="options-icon">
           </div>
+
+          <dialog id="folder-option-<%= item.id %>" class="folder-option focus:outline-none absolute top-3 -left-40 drop-shadow-lg py-3 z-50 bg-primary-100">
+            <ul>
+              <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3" onclick="showFileEditDialog('<%= item.id %>', '<%= item.name %>')">
+                <div>
+                  <img src="/images/options/edit-option.svg" alt="edit-icon">
+                </div>
+                <span>Edit</span>
+              </li>
+              <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3">
+                <div>
+                  <img src="/images/options/download-option.svg" alt="download-icon">
+                </div>
+                <span>Download</span>
+              </li>
+              <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3">
+                <div>
+                  <img src="/images/options/share-option.svg" alt="share-icon">
+                </div>
+                <span>Share</span>
+              </li>
+              <li class="cursor-pointer hover:bg-gray-200">
+                <form action="/files/<%= item.id %>/delete-file" method="POST">
+                  <% if (folderId) { %>
+                  <input type="hidden" name="parent_folder" value="<%= folderId %>" />
+                  <% } %>
+                  <button type="submit" class="flex gap-3 items-center p-1 px-3 w-full text-red-500 focus:outline-none ">
+                    <div>
+                      <img src="/images/options/delete-option.svg" alt="delete-icon">
+                    </div>
+                    <span>Delete</span>
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </dialog>
         </td>
       </tr>
       <% } %>
