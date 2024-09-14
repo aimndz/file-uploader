@@ -36,7 +36,7 @@
       </div>
       <div>
         <!-- Form for file upload -->
-        <form id="uploadForm" action="/files/upload-file" method="POST" enctype="multipart/form-data" class="mx-auto w-full border border-solid bg-accent-500 rounded-lg transition-all delay-75 duration-100 ease-in-out">
+        <form id="uploadForm" action="/files/upload-file" method="POST" enctype="multipart/form-data" class="mx-auto w-full border border-solid bg-accent-500 rounded-lg hover:bg-accent-600 transition-all delay-75 duration-100 ease-in-out">
           <div class="flex flex-col items-center gap-4">
             <input type="file" name="file" id="file" class="hidden">
             <label for="file" class="cursor-pointer p-3 text-primary-100">
@@ -87,19 +87,13 @@
           <div class="flex justify-center cursor-pointer" onclick="showOptions('<%= item.id %>')">
             <img src="/images/options-icon.svg" alt="options-icon">
           </div>
-          <dialog id="folder-option-<%= item.id %>" class="folder-option focus:outline-none absolute top-3 -left-40 drop-shadow-lg py-3 z-50 bg-primary-100">
+          <dialog id="folder-option-<%= item.id %>" class="folder-option focus:outline-none rounded-lg absolute top-3 -left-40 drop-shadow-lg py-3 z-50 bg-primary-100">
             <ul>
               <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3" onclick="showFolderEditDialog('<%= item.id %>', '<%= item.name %>')">
                 <div>
                   <img src="/images/options/edit-option.svg" alt="edit-icon">
                 </div>
                 <span>Edit</span>
-              </li>
-              <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3">
-                <div>
-                  <img src="/images/options/download-option.svg" alt="download-icon">
-                </div>
-                <span>Download</span>
               </li>
               <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3">
                 <div>
@@ -138,7 +132,7 @@
             <img src="/images/options-icon.svg" alt="options-icon">
           </div>
 
-          <dialog id="folder-option-<%= item.id %>" class="folder-option focus:outline-none absolute top-3 -left-40 drop-shadow-lg py-3 z-50 bg-primary-100">
+          <dialog id="folder-option-<%= item.id %>" class="folder-option focus:outline-none rounded-lg absolute top-3 -left-40 drop-shadow-lg py-3 z-50 bg-primary-100">
             <ul>
               <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3" onclick="showFileEditDialog('<%= item.id %>', '<%= item.name %>')">
                 <div>
