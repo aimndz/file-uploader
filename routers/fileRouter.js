@@ -20,6 +20,11 @@ fileRouter.post(
   fileController.edit_file_post
 );
 fileRouter.post(
+  "/:id/download-file",
+  ensureAuthenticated,
+  fileController.download_file_post
+);
+fileRouter.post(
   "/:id/delete-file",
   ensureAuthenticated,
   fileController.delete_file_post

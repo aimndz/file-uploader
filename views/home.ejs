@@ -140,11 +140,18 @@
                 </div>
                 <span>Edit</span>
               </li>
-              <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3">
-                <div>
-                  <img src="/images/options/download-option.svg" alt="download-icon">
-                </div>
-                <span>Download</span>
+              <li class="cursor-pointer hover:bg-gray-200">
+                <form action="/files/<%= item.id %>/download-file" method="POST">
+                  <% if (folderId) { %>
+                  <input type="hidden" name="parent_folder" value="<%= folderId %>" />
+                  <% } %>
+                  <button type="submit" class="flex gap-3 items-center p-1 px-3 w-full focus:outline-none ">
+                    <div>
+                      <img src="/images/options/download-option.svg" alt="download-icon">
+                    </div>
+                    <span>Download</span>
+                  </button>
+                </form>
               </li>
               <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3">
                 <div>

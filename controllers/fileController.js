@@ -188,6 +188,41 @@ const fileController = {
       res.redirect("/home");
     }
   }),
+
+  // Handle downloading a file
+  download_file_post: asyncHandler(async (req, res) => {
+    let { parent_folder } = req.body;
+    parent_folder = parent_folder || "root";
+
+    const file = await prisma.file.findFirst({
+      where: {
+        id: req.params.id,
+      },
+      select: {
+        name: true,
+      },
+    });
+
+    //uploads/user_141abab7-8960-4b5a-b9a0-f7ddaae4cb66/folder_root/file_gta_v_poster.jpg
+    const filePath = `uploads/user_${req.user.id}/folder_${parent_folder}/file_${file.name}`;
+
+    const { data, error } = await supabase.storage
+      .from("files")
+      .download(filePath);
+
+    if (error) {
+      throw new Error(
+        "There's an error downloading this file. Try again later."
+      );
+    }
+
+    // Set headers for file download
+    res.setHeader("Content-Disposition", `attachment; filename=${file.name}`);
+    res.setHeader("Content-Type", "application/octet-stream");
+
+    // Send the file
+    res.send(Buffer.from(await data.arrayBuffer()));
+  }),
 };
 
 export default fileController;
