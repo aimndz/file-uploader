@@ -1,0 +1,15 @@
+<dialog id="editFileDialog" class="rounded-lg z-50">
+  <form class="p-5 w-full max-w-lg bg-white z-50" method="POST">
+    <div class="space-y-3">
+      <%- include('../partials/_input', {label: 'New file name', name: 'new_file_name', type: 'text', placeholder: 'New file name...', value: '' }) %>
+      <%- include('../partials/_error', { field: 'new_file_name' }) %>
+    </div>
+    <% if (folderId ) { %>
+    <input type="hidden" name="parent_file" value="<%= folderId %>" />
+    <% } %>
+    <div class="flex justify-end mt-3 gap-3">
+      <button type="button" onclick="document.getElementById('editFileDialog').close()">Cancel</button>
+      <button type="submit">Edit</button>
+    </div>
+  </form>
+</dialog>

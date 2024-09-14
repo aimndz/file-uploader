@@ -1,71 +1,176 @@
-<h1><%= title %></h1>
-
-<% if (user) { %>
-<h2>Hello, <%= user.firstName %>!</h2>
-<a href="/logout">Log out</a>
-<% } %>
-
-<form action="/files/upload-file" method="POST" enctype="multipart/form-data">
-  <div>
-    <label for="file">File upload</label>
-    <input type="file" name="file" id="file">
-  </div>
-  <% if (folderId) { %>
-  <input type="hidden" name="parent_folder" value="<%= folderId %>" />
-  <% } %>
-  <button type="submit">Upload</button>
-</form>
-<%- include('partials/_error', { field: 'file_upload' }) %>
-
-<form action="/folders/create-folder" method="POST">
-  <div>
-    <label for="folder_name">New folder</label>
-    <input type="text" name="folder_name" id="folder_name" value="Untitled Folder">
-  </div>
-  <% if (folderId) { %>
-  <input type="hidden" name="parent_folder" value="<%= folderId %>" />
-  <% } %>
-  <button type="submit">Create</button>
-</form>
-<%- include('partials/_error', { field: 'folder_name' }) %>
-
 <section>
-  <h3>Items</h3>
-  <ul>
-    <% items.forEach(item => { %>
-    <!--  TODO: CHANGE THE ACTIONS DEPENDS IF THEY'RE FOLDERS/FILES -->
-    <li>
-      <%= item.name%>
-      <% if (item.type === "folder") {%>
-      <!-- Folders -->
-      <a href="/folders/<%= item.id %>"><button>View</button></a>
-      <form action="/folders/<%= item.id %>/edit-folder" method="POST">
-        <input type="text" name="new_folder_name" placeholder="New folder name..." value="<%= item.name %>">
-        <input type="hidden" name="parent_folder" value="<%= folderId %>" />
-        <button type="submit">Edit Folder</button>
-      </form>
-      <form action="/folders/<%= item.id %>/delete-folder" method="POST">
-        <% if (folderId) { %>
-        <input type="hidden" name="parent_folder" value="<%= folderId %>" />
-        <% } %>
-        <button type="submit">Delete Folder</button>
-      </form>
-      <% } else if (item.type === "file") { %>
-      <!-- Files -->
-      <a href="/files/<%= item.id %>"><button>View</button></a>
-      <form action="/files/<%= item.id %>/edit-file" method="POST">
-        <input type="text" name="new_file_name" placeholder="New file name..." value="<%= item.name %>">
-        <input type="hidden" name="parent_folder" value="<%= folderId %>" />
-        <button type="submit">Edit file</button>
-      </form>
-      <form action="/files/<%= item.id %>/delete-file" method="POST">
-        <input type="hidden" name="parent_folder" value="<%= folderId %>" />
-        <button type="submit">Delete file</button>
-      </form>
+  <!-- HEADER -->
+  <header class="flex justify-between items-center py-3">
+    <div>
+      <a href="/home"><img src="/images/aim-cloud-logo.svg" class="w-32" alt="aim-cloud-logo"></a>
+    </div>
 
+    <% if (user) { %>
+    <h1 class="font-medium text-2xl">Hello, <%= user.firstName %>!</h1>
+    <div>
+      <a href="/logout" class="flex gap-3 items-center text-red-500">
+        <div>
+          <img src="/images/sign-out.svg" alt="sign-out">
+        </div>
+        <span>Sign out</span>
+      </a>
+    </div>
+    <% } %>
+  </header>
+
+  <!-- DIALOGS -->
+  <%- include('partials/_dialog_create.ejs') %>
+  <%- include('partials/_dialog_folder-edit.ejs') %>
+  <%- include('partials/_dialog_file-edit.ejs') %>
+
+  <!-- CURRENT FOLDER AND ADD BUTTONS -->
+  <div class="flex justify-between items-center mt-10">
+    <div>
+      <h1 class="font-medium text-2xl"><%= title %></h1>
+    </div>
+    <div class="flex gap-3">
+      <div>
+        <button onclick="document.getElementById('createFolderDialog').showModal()" class="block p-3 mx-auto w-full border border-solid text-primary-100 bg-accent-500 rounded-lg hover:bg-accent-600 transition-all delay-75 duration-100 ease-in-out">
+          + New Folder
+        </button>
+      </div>
+      <div>
+        <!-- Form for file upload -->
+        <form id="uploadForm" action="/files/upload-file" method="POST" enctype="multipart/form-data" class="mx-auto w-full border border-solid bg-accent-500 rounded-lg hover:bg-accent-600 transition-all delay-75 duration-100 ease-in-out">
+          <div class="flex flex-col items-center gap-4">
+            <input type="file" name="file" id="file" class="hidden">
+            <label for="file" class="cursor-pointer p-3 text-primary-100">
+              + New File
+            </label>
+
+            <% if (folderId) { %>
+            <input type="hidden" name="parent_folder" value="<%= folderId %>" />
+            <% } %>
+          </div>
+
+          <!-- Display errors-->
+          <%- include('partials/_error', { field: 'file_upload' }) %>
+        </form>
+
+        <!-- auto-submit the form when a file is selected -->
+        <script>
+          document.getElementById('file').addEventListener('change', function() {
+            if (this.files.length > 0) {
+              // Submit the form when a file is selected
+              document.getElementById('uploadForm').submit();
+            }
+          });
+        </script>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN TABLE -->
+  <section class="mt-10">
+    <table class="w-full bg-primary-100">
+      <tr class="border-b border-solid px-3">
+        <th class="font-semibold py-3 pl-3 text-start">Name</th>
+        <th class="font-semibold py-3 text-start">Created at</th>
+        <th class="font-semibold py-3 text-start">Date modified</th>
+        <th class="font-semibold py-3 text-start">Size</th>
+      </tr>
+
+      <% items.forEach(item => { %>
+      <!-- Folders -->
+      <% if (item.type === "folder") { %>
+      <tr class="border-b">
+        <td class="py-3 pl-3 font-semibold"><a href="/folders/<%= item.id %>"><%= item.name %></a></td>
+        <td class="py-3 text-primary-800"><%= item.createdAt %></td>
+        <td class="py-3 text-primary-800"><%= item.modifiedAt%></td>
+        <td class="py-3 text-primary-800"><%= item.size %></td>
+        <td class="py-3 text-primary-800 pr-3 relative">
+          <div class="flex justify-center cursor-pointer" onclick="showOptions('<%= item.id %>')">
+            <img src="/images/options-icon.svg" alt="options-icon">
+          </div>
+          <dialog id="folder-option-<%= item.id %>" class="folder-option focus:outline-none rounded-lg absolute top-3 -left-40 drop-shadow-lg py-3 z-50 bg-primary-100">
+            <ul>
+              <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3" onclick="showFolderEditDialog('<%= item.id %>', '<%= item.name %>')">
+                <div>
+                  <img src="/images/options/edit-option.svg" alt="edit-icon">
+                </div>
+                <span>Edit</span>
+              </li>
+              <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3">
+                <div>
+                  <img src="/images/options/share-option.svg" alt="share-icon">
+                </div>
+                <span>Share</span>
+              </li>
+              <li class="cursor-pointer hover:bg-gray-200">
+                <form action="/folders/<%= item.id %>/delete-folder" method="POST">
+                  <% if (folderId) { %>
+                  <input type="hidden" name="parent_folder" value="<%= folderId %>" />
+                  <% } %>
+                  <button type="submit" class="flex gap-3 items-center p-1 px-3 w-full text-red-500 focus:outline-none ">
+                    <div>
+                      <img src="/images/options/delete-option.svg" alt="delete-icon">
+                    </div>
+                    <span>Delete</span>
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </dialog>
+        </td>
+      </tr>
       <% } %>
 
-    </li>
-    <% }) %>
-  </ul>
+      <!-- Files -->
+      <% if (item.type === "file") { %>
+      <tr>
+        <td class="py-3 pl-3 font-semibold"><%= item.name %></td>
+        <td class="py-3 text-primary-800"><%= item.createdAt %></td>
+        <td class="py-3 text-primary-800"><%= item.modifiedAt%></td>
+        <td class="py-3 text-primary-800"><%= item.size %></td>
+        <td class="py-3 text-primary-800 pr-3 relative">
+          <div class="flex justify-center cursor-pointer" onclick="showOptions('<%= item.id %>')">
+            <img src="/images/options-icon.svg" alt="options-icon">
+          </div>
+
+          <dialog id="folder-option-<%= item.id %>" class="folder-option focus:outline-none rounded-lg absolute top-3 -left-40 drop-shadow-lg py-3 z-50 bg-primary-100">
+            <ul>
+              <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3" onclick="showFileEditDialog('<%= item.id %>', '<%= item.name %>')">
+                <div>
+                  <img src="/images/options/edit-option.svg" alt="edit-icon">
+                </div>
+                <span>Edit</span>
+              </li>
+              <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3">
+                <div>
+                  <img src="/images/options/download-option.svg" alt="download-icon">
+                </div>
+                <span>Download</span>
+              </li>
+              <li class="flex gap-3 items-center cursor-pointer hover:bg-gray-200 p-1 px-3">
+                <div>
+                  <img src="/images/options/share-option.svg" alt="share-icon">
+                </div>
+                <span>Share</span>
+              </li>
+              <li class="cursor-pointer hover:bg-gray-200">
+                <form action="/files/<%= item.id %>/delete-file" method="POST">
+                  <% if (folderId) { %>
+                  <input type="hidden" name="parent_folder" value="<%= folderId %>" />
+                  <% } %>
+                  <button type="submit" class="flex gap-3 items-center p-1 px-3 w-full text-red-500 focus:outline-none ">
+                    <div>
+                      <img src="/images/options/delete-option.svg" alt="delete-icon">
+                    </div>
+                    <span>Delete</span>
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </dialog>
+        </td>
+      </tr>
+      <% } %>
+      <% }) %>
+    </table>
+  </section>
 </section>
