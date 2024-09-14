@@ -1,0 +1,15 @@
+<dialog id="createFolderDialog" class="rounded-lg z-50">
+  <form action="/folders/create-folder" class="p-5 w-full max-w-lg  bg-white z-50" method="POST">
+    <div class="space-y-3">
+      <%- include('_input', { label: 'New folder', name: 'folder_name', type: 'text', value: "Untitled Folder", placeholder: 'Enter folder name' }) %>
+      <%- include('_error', { field: 'folder_name' }) %>
+    </div>
+    <% if (folderId) { %>
+    <input type="hidden" name="parent_folder" value="<%= folderId %>" />
+    <% } %>
+    <div class="flex justify-end mt-3 gap-3">
+      <button type="submit" formmethod="dialog">Cancel</button>
+      <button type="submit">Create</button>
+    </div>
+  </form>
+</dialog>
